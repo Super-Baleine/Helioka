@@ -9,3 +9,6 @@ Yes, I know... The CEK is totally useless... But might be useful if I want add s
 Sorry, I didn't use the they neutral :'(
 
 But still, keep fighting! :D
+
+# Why GCM ?
+Please check [this](http://dx.doi.org/10.6028/NIST.SP.800-38D) out! x)
