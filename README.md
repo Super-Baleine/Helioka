@@ -11,4 +11,4 @@ Sorry, I didn't use the they neutral :'(
 But still, keep fighting! :D
 
 # Why GCM ?
-Please check [this](dx.doi.org/10.6028/NIST.SP.800-38D) out! x)
+Please check [this](http://dx.doi.org/10.6028/NIST.SP.800-38D) out! x)
