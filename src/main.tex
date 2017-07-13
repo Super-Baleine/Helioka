@@ -60,10 +60,19 @@ The client gets the $CEK$ and extract the Salt from it. Once the Salt extracted,
 The client gets the $KAK$ and extract the $PKA$ from it, which is a packet composed of the encrypted $PKA$ and its cryptographic parameters. The client decrypts $PKA$ under $CEK$ such as $DecSym(CEK, PKA, IV,AT)$.
 
 \subsection{$TEK$ exchange}
-One of the two participants (users) of the communication generates a $TEK$ and encrypts it under the other user's $PKB$ such as $EncAsym(PKB, TEK)$. The other user decrypts the $TEK$ such as $DecAsym(PKA, TEK)$, where $TEK$ is encrypted.
+One of the two participants' client generates the $TEK$ and an IV and an AT, both on 128 bits. The make a packet with the $TEK$, the IV, and the AT such as $packet=(TEK||IV||AT)$. The client gets the other user's $PKB$ and encrypts $packet$ such as $EncAsym(PKB,packet)$ and sends it.
 
 \subsection{Communication Encryption}
-Every "song" is turned into small packets. Every packet is encrypted under $TEK$. For every session is generated a random IV and AT on 128 bits. The clients encrypt the packets such as $EncSym(TEK, packet,IV,AT)$ and send it to each other.
+Every "song" is turned into small packets. Every packet is encrypted under $TEK$.
+
+\subsubsection{Voice splitting}
+Every 20ms the voice is turned into a 256-bit block $B_y$, where $y$ is the ID of the block. The block $B_y$ is split in eight packets $Z$ such as $Z_x=B_y/8$, where $x$ is the ID of the packet. 
+
+\subsubsection{Encryption of $Z$}
+For each packet $Z_x$ the client encrypts it such as $EncSym(TEK,Z_x,IV,AT)$. Each packet $Z_x$ is sent once encrypted encapsulated with the ID of the block such as $Z=(Z_x||y)$ and sends it.
+
+\subsubsection{Decryption of $Z$}
+For every packet $Z$, the receiver's client extracts $Z_x$ and $y$ from $Z$ and decrypts $Z_x$ such as $DecSym(TEK,Z_x,Iv,AT)$. Once every packet decrypted, the clients reassembles them such as $B_y=(Z_1||Z_2||Z_3||Z_4||Z_5||Z_6||Z_7||Z_8)$.
 
 \subsection{User's Passphrase change}
 The user defines his new Passphrase $P$. A random Salt is generated on 128 bits, the client proceeds to a Key Derivation such as $KEK=KDF(P, Salt, 7000)$. Once the new $KEK$ obtained from the Key Derivation function, a random IV and AT are both generated on 128 bits. Then, the clients encrypts the $CEK$ under the new $KEK$ derived from the new $P$ such as $EncSym(KEK,CEK,IV,AT)$. Once the $CEK$ encrypted, the client send the encrypted $CEK$ to the server as a packet $packet$ such as $packet=(CEK||IV||AT||Salt)$, where $CEK$ is the encrypted $CEK$.
